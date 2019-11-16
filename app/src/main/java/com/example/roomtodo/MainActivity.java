@@ -1,6 +1,8 @@
 package com.example.roomtodo;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -49,14 +51,11 @@ public class MainActivity extends AppCompatActivity {
                         .todoDao()
                         .findTodoById(4);
 
-                Log.d(TAG, "run: " + todo.toString());
-                if (todo != null) {
-                    TodoRoomDatabase.getInstance(getApplicationContext())
-                            .todoDao()
-                            .deleteTodo(todo);
+                TodoRoomDatabase.getInstance(getApplicationContext())
+                        .todoDao()
+                        .deleteTodo(todo);
 
-                    Log.d(TAG, "run: todo has been deleted...");
-                }
+                Log.d(TAG, "run: todo has been deleted...");
 
             }
         }).start();
@@ -118,6 +117,27 @@ public class MainActivity extends AppCompatActivity {
             }
         }).start();
 
+    }
+
+    public void getAllUsingLiveDataOnly(View view) {
+
+        LiveData<List<Todo>> todoList = TodoRoomDatabase.getInstance(getApplicationContext())
+                .todoDao()
+                .findTodosUsingLiveDataOnly();
+
+        todoList.observe(this, new Observer<List<Todo>>() {
+            @Override
+            public void onChanged(List<Todo> todoList) {
+                Log.d(TAG, "onChanged: " + todoList.toString());
+                Log.d(TAG, "onChanged: " + todoList.size());
+            }
+        });
+
+        todoList.removeObservers(this);
+
+    }
+
+    public void getAllUsingViewModelAndLiveData(View view) {
     }
 
     class InsertAsyncTask extends AsyncTask<Todo, Void, Void> {

@@ -1,5 +1,6 @@
 package com.example.roomtodo;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -31,5 +32,8 @@ public interface TodoDao {
 
     @Query("SELECT * FROM todo_table WHERE todo_completed LIKE 1")
     List<Todo> getAllCompletedTodos();
+
+    @Query("SELECT * FROM todo_table")
+    LiveData<List<Todo>> findTodosUsingLiveDataOnly();
 
 }
