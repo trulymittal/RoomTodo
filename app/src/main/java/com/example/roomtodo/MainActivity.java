@@ -1,6 +1,8 @@
 package com.example.roomtodo;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,11 +15,22 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    TodoViewModel todoViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        todoViewModel = ViewModelProviders.of(this).get(TodoViewModel.class);
+
+        todoViewModel.getAllTodos().observe(this, new Observer<List<Todo>>() {
+            @Override
+            public void onChanged(List<Todo> todoList) {
+                Log.d(TAG, "onChanged: " + todoList.toString());
+                Log.d(TAG, "onChanged: " + todoList.size());
+            }
+        });
     }
 
     public void insertSingleTodo(View view) {
@@ -50,13 +63,11 @@ public class MainActivity extends AppCompatActivity {
                         .findTodoById(4);
 
                 Log.d(TAG, "run: " + todo.toString());
-                if (todo != null) {
-                    TodoRoomDatabase.getInstance(getApplicationContext())
-                            .todoDao()
-                            .deleteTodo(todo);
+                TodoRoomDatabase.getInstance(getApplicationContext())
+                        .todoDao()
+                        .deleteTodo(todo);
 
-                    Log.d(TAG, "run: todo has been deleted...");
-                }
+                Log.d(TAG, "run: todo has been deleted...");
 
             }
         }).start();
