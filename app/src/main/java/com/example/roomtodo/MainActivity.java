@@ -137,9 +137,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void getAllUsingViewModelAndLiveData(View view) {
-    }
-
     class InsertAsyncTask extends AsyncTask<Todo, Void, Void> {
 
         @Override
